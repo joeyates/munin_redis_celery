@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+class Queues < Struct.new(:queues, :redis_database)
+  def config
+    s = <<-EOT
+graph_category Celery
+graph_title Celery - Queues
+graph_args -l 0
+graph_vlabel tasks
+    EOT
+    queues.each { |q| s += "#{q}.label #{q}\n" }
+    s
+  end
+
+  def data
+    s = ''
+    queues.each do |q|
+      count = `redis-cli -n #{redis_database} llen #{q}`.chomp
+      s += "#{q}.value #{count}\n"
+    end
+    s
+  end
+end
+
+unless ENV.include?('queues')
+  raise "You must set 'env.queues' to a comma-separated list of queues in plugin-conf.d"
+end
+
+redis_database = ENV['redis_database'] || '0'
+queues = ENV['queues'].split(',')
+
+stats = Queues.new(queues, redis_database)
+
+case ARGV[0]
+when 'autoconf'
+  puts 'yes'
+when 'config'
+  puts stats.config
+else
+  puts stats.data
+end
+

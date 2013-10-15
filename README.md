@@ -6,9 +6,9 @@ Monitors celery queues stored in redis.
 Installation
 ------------
 
-As a non-privileged user:
+As any user:
 ```
-git clone ...
+git clone https://github.com/joeyates/munin_redis_celery.git
 ```
 
 As root:
@@ -19,15 +19,15 @@ ln -s /path/to/munin_redis_celery/redis_celery /etc/munin/plugins
 Create /etc/munin/plugins-conf.d/redis_celery:
 ```
 [redis_celery]
-user _username_
-env._setting1_ _value_
+user USERNAME
+env.SETTING1 VALUE (see below for settings)
 ...
 ```
 
 ### Settings
 
-`env.queues` (required) a comma-separated list of queues to mnitor,
-`env.redis\_database` (optional) the number of the redis database where queues are stored (defaults to 0)
+* `env.queues` (required) a comma-separated list of queues to mnitor,
+* `env.redis\_database` (optional) the number of the redis database where queues are stored (defaults to 0)
 
 Licence
 -------
